@@ -1,0 +1,4 @@
+-Document Oriented Database
+Document oriented database meruopakan sistem database yang digunakan untukmemanipulasi data dalam bentuk document(semi structur data),Biasanya document disimpan dalam bentuk json atau xml,
+Document oriented database biasanya bertolak belakang dengan relational database.,relational database biasanya menyimpan data dalam bentuk table, dan menyimpan relasinya di table lain,
+Document oriented database biasanya menyimpan data dalam bentuk JSON atau XML dan menyimpan relasinya sebagai embedded object di dalam document yang sama.
