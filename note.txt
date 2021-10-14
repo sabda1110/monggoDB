@@ -1,24 +1,172 @@
--Data Model
-Pindah dari relational database ke document database bukanhal yang sesederhan hanya dengan memindahkan semua table ke collection,
-penggunakan document database tidak akan mendatangkan manfaat besar jika kita tidak mengenrti cara memodelkan data untuk kebutuhhan aplikasi kita,
-saat memodelkan data menggunakan relational datbase, biasanya kita mengacu ke database normalization,
-Saat memodelkan data menggunakan document database, kita harus mengacu ke penggunaaan aplikasi dalam melakukan query,update dan memproses data.
+-Query document
+Sama seperti di relational database, di Monggo Db pun kita bisa melakukan query atau pencarian document yang sudah kira simpan di Collection
+-> Mencari document
+   db.collection.find(query);
+->Mencari document bilang embbeded
+   db.collection.fin({"items.product_id":2});
 
--Schema yang flexible
-tidak seperti di relational database, di mongoDB kita bisa memasukkan data ke collection secara langsung tanpa mendefinisikan shema collection nya,
-Schema untuk collection di mongoDB sangat flexible, tiap document bisa berbeda.Tidak seperti table di raltional database yang harus sama tiap record.
-Namun pada prakteknya,sangat di rekomendasikan menggunakan jenis data yang sama untuk tiap Collection,walaupun bisa berbeda-beda di collection yang sama
+-Comparison Operator(1)
+Operator   -   Keterangan
+$eq            Membandingkan Value dengan value lain
+$gt            Membandingkan value lebih besar dari value lain
+$gte           Membandingkan value lebih besar atau sama dengan value lain
+$lt            Membandingkan value lebih kacil dari value lain
+$lte           Membandingkan value lebih kecil atau sama dengan value lain
+$in            Membandingkan value dengan value yang ada di array
+$nin           Membandingkan value tidak ada dalam value yang ada di array
+$ne            Membandingkan value tidak sama dengan value lain
 
--Primary Key
-Saat membuat dokument di mongoDB, kita wajib menambahkan primary Key,
-tidak seperti relational database yang bebas membuat column untuk primary key, di mongiDB,primary key wajib menggunakan field_id
-selain itu primary key tidak bisa olebih dari 1field hanya bisa field_id jadi jika kita ingin membuat composite primary key, maka kita hanya bisa lakukakn dengan menggunakan 1 field_id
+-Logical Operator
+Operator   -   Keterangan
+$and           Menggabungkan query dengan operasi AND,mengembalikan document jika semua kondisi benar
+$or            Menggabgungkan query dengan operasi OR,mengembalikan document jika salah satu kondisi benar
+$nor           Menggabungkan query dengan operasi NOR,mengembalikan document yang gagal di semua kondisi
+$not           Membalikkan kondisi,mengembalikan document yang tidak sesuai dengan kondisi
+->Contoh
+db.products.find({$and:[
+    {
+        category:{
+            $in:["laptop","handphone"]
+        }
+    },
+    {
+        price:{
+            $gt:20000000
+        }
+    }
+]});
 
--Insert document
-Untuk menyimpan data ke mongoDB,kita perlu membuat document dalam bentuk JSON
-field_id tidak wajib dimasukkan,jika kita tidak memasukan field_id, maka secara otomasti MongoDB akan membuat_id baru secara random dengan tipe data Ibjectid
 
--> Fungss Insert document
-db.<collection>.inserOne(document) -Menambahkan dokumen ke collection
-db.<collection>.inserMany(array<document>) - Menambahkan semua dokumen di array ke collection
-db.<collection>.insert(document/array) - menambahkan satu document atau banyak dokumen
+-Element Query Operator
+Operator     -    Keterangan
+$exists           Mencocokkan document yang memiliki field tersebut
+$type             Mencocokkan document yang memiliki type field tersebut
+->Contoh
+Contoh 1
+db.products.find({ 
+    category :{
+        $exists:false
+    }
+});
+contoh 2
+db.products.find({
+    category :{
+        $type:"string"
+    }
+});
+
+-Evalution Query Operator
+Operator      -    Keterangan
+$expr              Menggunakan aggregation operation
+$jsonSchema        Validasi document sesuai dengan JSON Schema
+$mod               Melakukan operasi modulo
+$regex             Mengambil document sesua dengan regular expression(PCRE)
+$text              Melakukan pencarian menggunakan text
+$where             Mengambil document dengan JavaScriptFunction
+
+->Contoh
+// select * from products where price > 1000000
+db.products.find({
+    $expr: {
+        $gt: ["$price", 1000000]
+    }
+});
+
+// select * from customers where toUpper(_id) = 'KHANNEDY'
+db.customer.find({
+    $expr: {
+        $eq: [
+            { $toUpper: "$_id" }, 
+            "SABDA"
+        ]
+    }
+});
+
+// select * from products where name is not null and category is not null
+db.products.find({
+    $jsonSchema: {
+        required: [ "name", "category"]
+    }
+});
+
+// select * from products where name is not null and type(name) = 'string' and type(price) = 'long'
+db.products.find({
+    $jsonSchema: {
+        required: [ "name"],
+        properties: {
+            name: {
+                bsonType: "string"
+            },
+            price: {
+                bsonType: "long"
+            }
+        }
+    }
+});
+
+// select * from products where price % 5 = 0
+db.products.find({ 
+    price: { 
+        $mod: [5, 0]
+    } 
+});
+
+// select * from products where name like "%mie%"
+db.products.find({
+    name: {
+        $regex: /mie/,
+        $options: "i"
+    }
+});
+
+// select * from products where name like "Mie%"
+db.products.find({
+    name: {
+        $regex: /^Mie/
+    }
+});
+
+// create text index on products
+db.products.createIndex({
+    name: "text"
+});
+
+// select * from products where (name like "%mie%" or name like "%sedap%")
+db.products.find({
+    $text: {
+        $search: "mie sedap"
+    }
+});
+
+// select * from products where name like "%mie sedap%"
+db.products.find({
+    $text: {
+        $search: '"mie sedap"'
+    }
+});
+
+// select * fro customers where _id = "khannedy"
+db.customers.find({
+    $where: function(){
+        return this._id == "khannedy";
+    }
+});
+
+
+-Array Query Operator
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
