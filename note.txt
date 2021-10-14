@@ -1,4 +1,15 @@
--Document Oriented Database
-Document oriented database meruopakan sistem database yang digunakan untukmemanipulasi data dalam bentuk document(semi structur data),Biasanya document disimpan dalam bentuk json atau xml,
-Document oriented database biasanya bertolak belakang dengan relational database.,relational database biasanya menyimpan data dalam bentuk table, dan menyimpan relasinya di table lain,
-Document oriented database biasanya menyimpan data dalam bentuk JSON atau XML dan menyimpan relasinya sebagai embedded object di dalam document yang sama.
+-Database
+Database adalah tempat menyimpan collection(table)
+Semua collection harus disimpan di database
+Biasanya database digunakan untuk memisahkan data secara logica peraplikasi artinya biasanya satu aplikasi akan memiliki satu database,
+Jarang sekali kita akan menggunakan satu database untuk beberapa aplikasi.
+
+-Membuat Database
+Kita tidak perlu secara eksplisit membuat database,
+MonggoDB akan secara otomatis membuat database sesuai dengan nama database yang kita pilih,
+Untuk memilih nama database kita bisa menggunakan perintah "USE"
+
+-collection
+Collection adalah tempat untuk menyimpan document
+Maximum perDocument yang bisa disimpan adalah 16MB
+Maximum level nested document yang bisa disimpan adalah 100 Level
