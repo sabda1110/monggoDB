@@ -1,15 +1,24 @@
--Database
-Database adalah tempat menyimpan collection(table)
-Semua collection harus disimpan di database
-Biasanya database digunakan untuk memisahkan data secara logica peraplikasi artinya biasanya satu aplikasi akan memiliki satu database,
-Jarang sekali kita akan menggunakan satu database untuk beberapa aplikasi.
+-Data Model
+Pindah dari relational database ke document database bukanhal yang sesederhan hanya dengan memindahkan semua table ke collection,
+penggunakan document database tidak akan mendatangkan manfaat besar jika kita tidak mengenrti cara memodelkan data untuk kebutuhhan aplikasi kita,
+saat memodelkan data menggunakan relational datbase, biasanya kita mengacu ke database normalization,
+Saat memodelkan data menggunakan document database, kita harus mengacu ke penggunaaan aplikasi dalam melakukan query,update dan memproses data.
 
--Membuat Database
-Kita tidak perlu secara eksplisit membuat database,
-MonggoDB akan secara otomatis membuat database sesuai dengan nama database yang kita pilih,
-Untuk memilih nama database kita bisa menggunakan perintah "USE"
+-Schema yang flexible
+tidak seperti di relational database, di mongoDB kita bisa memasukkan data ke collection secara langsung tanpa mendefinisikan shema collection nya,
+Schema untuk collection di mongoDB sangat flexible, tiap document bisa berbeda.Tidak seperti table di raltional database yang harus sama tiap record.
+Namun pada prakteknya,sangat di rekomendasikan menggunakan jenis data yang sama untuk tiap Collection,walaupun bisa berbeda-beda di collection yang sama
 
--collection
-Collection adalah tempat untuk menyimpan document
-Maximum perDocument yang bisa disimpan adalah 16MB
-Maximum level nested document yang bisa disimpan adalah 100 Level
+-Primary Key
+Saat membuat dokument di mongoDB, kita wajib menambahkan primary Key,
+tidak seperti relational database yang bebas membuat column untuk primary key, di mongiDB,primary key wajib menggunakan field_id
+selain itu primary key tidak bisa olebih dari 1field hanya bisa field_id jadi jika kita ingin membuat composite primary key, maka kita hanya bisa lakukakn dengan menggunakan 1 field_id
+
+-Insert document
+Untuk menyimpan data ke mongoDB,kita perlu membuat document dalam bentuk JSON
+field_id tidak wajib dimasukkan,jika kita tidak memasukan field_id, maka secara otomasti MongoDB akan membuat_id baru secara random dengan tipe data Ibjectid
+
+-> Fungss Insert document
+db.<collection>.inserOne(document) -Menambahkan dokumen ke collection
+db.<collection>.inserMany(array<document>) - Menambahkan semua dokumen di array ke collection
+db.<collection>.insert(document/array) - menambahkan satu document atau banyak dokumen
